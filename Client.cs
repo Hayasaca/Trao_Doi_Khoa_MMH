@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Client
 {
-    class Program
+    class Client
     {
         const int PORT_NO = 8080;
         const string SERVER_IP = "192.168.38.45";
@@ -30,10 +30,24 @@ namespace Client
             nwStream.Write(pubKeyyToSend, 0, pubKeyyToSend.Length);
 
             //---read back the text---
-            byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
-            Console.WriteLine("Received : " + Encoding.ASCII.GetString(bytesToRead, 0, bytesRead));
-            Console.ReadLine();
+            while (true)
+            {
+                byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+                int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
+                string receivedStr = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                Console.WriteLine("Received : " + receivedStr);
+                //Console.ReadLine();
+
+                if(receivedStr.Contains("New client connected"))
+                {
+                    Console.WriteLine("Sending : " + textToSend);
+                    nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                    Console.WriteLine("Sending : " + pubKeyx);
+                    nwStream.Write(pubKeyyToSend, 0, pubKeyxToSend.Length);
+                    Console.WriteLine("Sending : " + pubKeyy);
+                    nwStream.Write(pubKeyyToSend, 0, pubKeyyToSend.Length);
+                }
+            }
             client.Close();
         }
     }
